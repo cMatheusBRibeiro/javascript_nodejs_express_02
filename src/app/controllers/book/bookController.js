@@ -1,4 +1,3 @@
-import Author from "../../models/author/author.js";
 import Book from "../../models/book/book.js";
 
 class BookController {
