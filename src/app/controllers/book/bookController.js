@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Book from "../../models/book/book.js";
 
 class BookController {
@@ -25,11 +26,21 @@ class BookController {
     try {
       const book = await Book.findById(req.params.id).populate("author").exec();
 
-      res.status(200).json(book);
+      if (book !== null) {
+        res.status(200).json(book);
+      } else {
+        res.status(404).json({ detail: "Book not found." });
+      }
     } catch (error) {
-      res
-        .status(500)
-        .json({ detail: `Error when get book by id: ${error.message}` });
+      if (error instanceof mongoose.Error.CastError) {
+        res
+          .status(400)
+          .json({ detail: `One or more values passed is invalid.` });
+      } else {
+        res
+          .status(500)
+          .json({ detail: `Error when get book by id: ${error.message}` });
+      }
     }
   }
 
