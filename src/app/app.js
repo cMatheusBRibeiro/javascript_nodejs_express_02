@@ -2,6 +2,7 @@ import express from "express";
 import { databaseConnect } from "../config/db/index.js";
 import routes from "./router/index.js";
 import errorHandling from "../middlewares/errors/errorHandling.js";
+import notFoundMiddleware from "../middlewares/not-found/notFoundMiddleware.js";
 
 await databaseConnect();
 
@@ -40,6 +41,8 @@ const configurableMiddleware = (options) => {
 app.use(configurableMiddleware({ foo: "bar" }));
 
 routes(app);
+
+app.use(notFoundMiddleware());
 
 app.use(errorHandling);
 
