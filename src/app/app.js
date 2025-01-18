@@ -17,7 +17,10 @@ app.use((_, __, next) => {
 
 /**
  * This middleware will be execute when /books is requested with the GET verb.
- * On other routes, this middleware will be ignored
+ * On other routes, this middleware will be ignored.
+ *
+ * ! Using next or res is necessary because if you don't use them,
+ * ! the request will be processed infinitely until it is terminated.
  */
 app.get("/books", (_, __, next) => {
   console.log("Specific middleware for GET and route /books");
