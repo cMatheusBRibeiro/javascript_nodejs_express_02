@@ -1,8 +1,7 @@
-import mongoose from "mongoose";
 import Book from "../../models/book/book.js";
 
 class BookController {
-  static async getAllBooks(req, res) {
+  static async getAllBooks(req, res, next) {
     const publisher = req.query.publisher;
 
     const filter = {};
@@ -16,13 +15,11 @@ class BookController {
 
       res.status(200).json(booksList);
     } catch (error) {
-      res
-        .status(500)
-        .json({ detail: `Error when get all books: ${error.message}` });
+      next(error);
     }
   }
 
-  static async getBookById(req, res) {
+  static async getBookById(req, res, next) {
     try {
       const book = await Book.findById(req.params.id).populate("author").exec();
 
@@ -32,19 +29,11 @@ class BookController {
         res.status(404).json({ detail: "Book not found." });
       }
     } catch (error) {
-      if (error instanceof mongoose.Error.CastError) {
-        res
-          .status(400)
-          .json({ detail: `One or more values passed is invalid.` });
-      } else {
-        res
-          .status(500)
-          .json({ detail: `Error when get book by id: ${error.message}` });
-      }
+      next(error);
     }
   }
 
-  static async addBook(req, res) {
+  static async addBook(req, res, next) {
     try {
       const createdBook = await Book.create(req.body);
 
@@ -52,13 +41,11 @@ class BookController {
         .status(201)
         .json({ detail: "Book created successfully!", book: createdBook });
     } catch (error) {
-      res
-        .status(500)
-        .json({ detail: `Error when created a new book: ${error.message}` });
+      next(error);
     }
   }
 
-  static async updateBook(req, res) {
+  static async updateBook(req, res, next) {
     try {
       await Book.findByIdAndUpdate(req.params.id, req.body);
 
@@ -67,21 +54,17 @@ class BookController {
         .status(200)
         .json({ detail: "Book updated successfully", book: updatedBook });
     } catch (error) {
-      res
-        .status(500)
-        .json({ detail: `Error when update author: ${error.message}` });
+      next(error);
     }
   }
 
-  static async deleteBook(req, res) {
+  static async deleteBook(req, res, next) {
     try {
       await Book.findByIdAndDelete(req.params.id);
 
       res.status(204).send();
     } catch (error) {
-      res
-        .status(500)
-        .json({ detail: `Error when delete book: ${error.message}` });
+      next(error);
     }
   }
 }
