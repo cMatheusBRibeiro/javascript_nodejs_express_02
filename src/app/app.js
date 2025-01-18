@@ -27,6 +27,18 @@ app.get("/books", (_, __, next) => {
   next();
 });
 
+/**
+ * It is a configurable middleware.
+ * It receives options by parameters and returns function similar to previous middlewares.
+ */
+const configurableMiddleware = (options) => {
+  return function (_, __, next) {
+    console.log(options);
+    next();
+  };
+};
+app.use(configurableMiddleware({ foo: "bar" }));
+
 routes(app);
 
 app.use(errorHandling);
