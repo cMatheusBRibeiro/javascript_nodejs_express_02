@@ -3,14 +3,14 @@ import mongoose from "mongoose";
 const bookSchema = mongoose.Schema(
   {
     id: { type: mongoose.Schema.Types.ObjectId },
-    title: { type: String, required: true },
-    publisher: { type: String },
+    title: { type: String, required: [true, "Book title is required"] },
+    publisher: { type: String, required: [true, "Publisher is required"] },
     price: { type: Number },
     pages: { type: Number },
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "author",
-      required: true,
+      required: [true, "Author is required"],
     },
   },
   { versionKey: false }

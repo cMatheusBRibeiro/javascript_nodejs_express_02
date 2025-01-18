@@ -1,31 +1,27 @@
 import Author from "../../models/author/author.js";
 
 class AuthorController {
-  static async getAllAuthors(_, res) {
+  static async getAllAuthors(_, res, next) {
     try {
       const authorsList = await Author.find({});
 
       res.status(200).json(authorsList);
     } catch (error) {
-      res
-        .status(500)
-        .json({ detail: `Error when get all authors: ${error.message}` });
+      next(error);
     }
   }
 
-  static async getAuthorById(req, res) {
+  static async getAuthorById(req, res, next) {
     try {
       const author = await Author.findById(req.params.id);
 
       res.status(200).json(author);
     } catch (error) {
-      res
-        .status(500)
-        .json({ detail: `Error when get author by id: ${error.message}` });
+      next(error);
     }
   }
 
-  static async addAuthor(req, res) {
+  static async addAuthor(req, res, next) {
     try {
       const newAuthor = await Author.create(req.body);
 
@@ -33,13 +29,11 @@ class AuthorController {
         .status(201)
         .json({ detail: "Author created successfully!", author: newAuthor });
     } catch (error) {
-      res
-        .status(500)
-        .json({ detail: `Error when created a new author: ${error.message}` });
+      next(error);
     }
   }
 
-  static async updateAuthor(req, res) {
+  static async updateAuthor(req, res, next) {
     try {
       await Author.findByIdAndUpdate(req.params.id, req.body);
 
@@ -48,21 +42,17 @@ class AuthorController {
         .status(200)
         .json({ detail: "Author updated successfully", author: updatedAuthor });
     } catch (error) {
-      res
-        .status(500)
-        .json({ detail: `Error when update author: ${error.message}` });
+      next(error);
     }
   }
 
-  static async deleteAuthor(req, res) {
+  static async deleteAuthor(req, res, next) {
     try {
       await Author.findByIdAndDelete(req.params.id);
 
       res.status(204).send();
     } catch (error) {
-      res
-        .status(500)
-        .json({ detail: `Error when delete author: ${error.message}` });
+      next(error);
     }
   }
 }
