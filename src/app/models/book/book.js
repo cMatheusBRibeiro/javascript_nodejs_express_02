@@ -9,14 +9,14 @@ const bookSchema = mongoose.Schema(
       required: [true, "Publisher is required"],
       enum: {
         values: ["House Code", "O'Reilly"],
-        message: "Publisher does not meet expectations",
+        message: 'Publisher "{VALUE}" is not allowed',
       },
     },
     price: { type: Number },
     pages: {
       type: Number,
-      min: [10, "Pages must be larger than 10"],
-      max: [5000, "Pages must be smaller than 5,000"],
+      min: [10, "Pages must be larger than 10, value sent: {VALUE}"],
+      max: [5000, "Pages must be smaller than 5,000, value sent: {VALUE}"],
     },
     author: {
       type: mongoose.Schema.Types.ObjectId,
