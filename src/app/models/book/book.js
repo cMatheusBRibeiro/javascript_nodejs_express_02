@@ -3,20 +3,23 @@ import mongoose from "mongoose";
 const bookSchema = mongoose.Schema(
   {
     id: { type: mongoose.Schema.Types.ObjectId },
-    title: { type: String, required: [true, "Book title is required"] },
+    title: { type: String, required: [true, "Book title is required."] },
     publisher: {
       type: String,
-      required: [true, "Publisher is required"],
+      required: [true, "Publisher is required."],
       enum: {
         values: ["House Code", "O'Reilly"],
-        message: 'Publisher "{VALUE}" is not allowed',
+        message: 'Publisher "{VALUE}" is not allowed.',
       },
     },
     price: { type: Number },
     pages: {
       type: Number,
-      min: [10, "Pages must be larger than 10, value sent: {VALUE}"],
-      max: [5000, "Pages must be smaller than 5,000, value sent: {VALUE}"],
+      validate: {
+        validator: (value) => value >= 10 && value <= 5000,
+        message:
+          "Pages must be greater than 10 and less than 5,000, value sent: {VALUE}.",
+      },
     },
     author: {
       type: mongoose.Schema.Types.ObjectId,
