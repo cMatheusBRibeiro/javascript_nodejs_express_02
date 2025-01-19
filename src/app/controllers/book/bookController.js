@@ -1,5 +1,5 @@
 import NotFound from "../../../errors/NotFound/NotFound.js";
-import Book from "../../models/book/book.js";
+import { Book } from "../../models/index.js";
 
 class BookController {
   static async getAllBooks(req, res, next) {
