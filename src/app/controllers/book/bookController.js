@@ -7,8 +7,11 @@ class BookController {
 
     const filter = {};
 
+    /**
+     * Both options are valid for filter values with texts and are not case sensitive.
+     */
     if (publisher) filter["publisher"] = new RegExp(publisher, "i");
-    if (title) filter["title"] = new RegExp(title, "i");
+    if (title) filter["title"] = { $regex: title, $options: "i" };
 
     try {
       const booksList = await Book.find(filter).populate("author").exec();
