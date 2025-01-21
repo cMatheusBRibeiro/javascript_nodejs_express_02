@@ -1,11 +1,12 @@
 import NotFound from "../../../errors/NotFound/NotFound.js";
-import { Book } from "../../models/index.js";
+import { Author, Book } from "../../models/index.js";
 
-const createFilterForGetAllBooks = ({
+const createFilterForGetAllBooks = async ({
   publisher,
   title,
   minPages,
   maxPages,
+  authorName,
 }) => {
   const filter = {};
 
@@ -22,12 +23,22 @@ const createFilterForGetAllBooks = ({
   if (minPages) filter.pages.$gte = minPages;
   if (maxPages) filter.pages.$lte = maxPages;
 
+  if (authorName) {
+    const authors = await Author.find({
+      name: { $regex: authorName, $options: "i" },
+    });
+
+    filter.author = {
+      $in: authors.map((author) => author._id),
+    };
+  }
+
   return filter;
 };
 
 class BookController {
   static async getAllBooks(req, res, next) {
-    const filter = createFilterForGetAllBooks(req.query);
+    const filter = await createFilterForGetAllBooks(req.query);
 
     try {
       const booksList = await Book.find(filter).populate("author").exec();
