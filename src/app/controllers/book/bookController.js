@@ -1,17 +1,33 @@
 import NotFound from "../../../errors/NotFound/NotFound.js";
 import { Book } from "../../models/index.js";
 
+const createFilterForGetAllBooks = ({
+  publisher,
+  title,
+  minPages,
+  maxPages,
+}) => {
+  const filter = {};
+
+  /**
+   * Both options are valid for filter values with texts and are not case sensitive.
+   */
+  if (publisher) filter.publisher = new RegExp(publisher, "i");
+  if (title) filter.title = { $regex: title, $options: "i" };
+
+  /**
+   * Filter books by pages when greater than or equal and less than or equal.
+   */
+  if (minPages || maxPages) filter.pages = {};
+  if (minPages) filter.pages.$gte = minPages;
+  if (maxPages) filter.pages.$lte = maxPages;
+
+  return filter;
+};
+
 class BookController {
   static async getAllBooks(req, res, next) {
-    const { publisher, title } = req.query;
-
-    const filter = {};
-
-    /**
-     * Both options are valid for filter values with texts and are not case sensitive.
-     */
-    if (publisher) filter["publisher"] = new RegExp(publisher, "i");
-    if (title) filter["title"] = { $regex: title, $options: "i" };
+    const filter = createFilterForGetAllBooks(req.query);
 
     try {
       const booksList = await Book.find(filter).populate("author").exec();
