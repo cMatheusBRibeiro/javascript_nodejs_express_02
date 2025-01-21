@@ -3,13 +3,12 @@ import { Book } from "../../models/index.js";
 
 class BookController {
   static async getAllBooks(req, res, next) {
-    const publisher = req.query.publisher;
+    const { publisher, title } = req.query;
 
     const filter = {};
 
-    if (publisher) {
-      filter["publisher"] = new RegExp(publisher, "i");
-    }
+    if (publisher) filter["publisher"] = new RegExp(publisher, "i");
+    if (title) filter["title"] = new RegExp(title, "i");
 
     try {
       const booksList = await Book.find(filter).populate("author").exec();
