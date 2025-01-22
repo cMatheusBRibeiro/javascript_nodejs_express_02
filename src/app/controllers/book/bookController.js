@@ -1,3 +1,4 @@
+import InvalidRequest from "../../../errors/InvalidRequest/InvalidRequest.js";
 import NotFound from "../../../errors/NotFound/NotFound.js";
 import { Author, Book } from "../../models/index.js";
 
@@ -39,11 +40,24 @@ const createFilterForGetAllBooks = async ({
 class BookController {
   static async getAllBooks(req, res, next) {
     const filter = await createFilterForGetAllBooks(req.query);
+    let { page = 0, size = 10, offset = 0 } = req.query;
+
+    page = parseInt(page);
+    size = parseInt(size);
+    offset = parseInt(offset);
 
     try {
-      const booksList = await Book.find(filter).populate("author").exec();
+      if (page >= 0 && size >= 0) {
+        const booksList = await Book.find(filter)
+          .skip(page * size + offset)
+          .limit(size)
+          .populate("author")
+          .exec();
 
-      res.status(200).json(booksList);
+        res.status(200).json({ content: booksList, page, size, offset });
+      } else {
+        next(new InvalidRequest("Page and/or size are invalid!"));
+      }
     } catch (error) {
       next(error);
     }
