@@ -41,7 +41,7 @@ class BookController {
     const filter = await createFilterForGetAllBooks(req.query);
 
     try {
-      const booksList = Book.find(filter).populate("author");
+      const booksList = Book.find(filter);
 
       req.search = booksList;
 
@@ -53,7 +53,7 @@ class BookController {
 
   static async getBookById(req, res, next) {
     try {
-      const book = await Book.findById(req.params.id).populate("author").exec();
+      const book = await Book.findById(req.params.id);
 
       if (book !== null) {
         res.status(200).json(book);
