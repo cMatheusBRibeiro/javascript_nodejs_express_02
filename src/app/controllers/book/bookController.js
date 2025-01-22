@@ -40,15 +40,20 @@ const createFilterForGetAllBooks = async ({
 class BookController {
   static async getAllBooks(req, res, next) {
     const filter = await createFilterForGetAllBooks(req.query);
-    let { page = 0, size = 10, offset = 0 } = req.query;
+    let { page = 0, size = 10, offset = 0, sort = "_id,asc" } = req.query;
+
+    let [sortColumn, sortDirection] = sort.split(",");
 
     page = parseInt(page);
     size = parseInt(size);
     offset = parseInt(offset);
+    sortDirection =
+      sortDirection && sortDirection.toLowerCase() === "desc" ? -1 : 1;
 
     try {
       if (page >= 0 && size >= 0) {
         const booksList = await Book.find(filter)
+          .sort({ [sortColumn]: sortDirection })
           .skip(page * size + offset)
           .limit(size)
           .populate("author")
