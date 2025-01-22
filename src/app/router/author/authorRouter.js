@@ -1,9 +1,10 @@
 import express from "express";
 import AuthorController from "../../controllers/author/AuthorController.js";
+import pagination from "../../../middlewares/pagination/pagination.js";
 
 const authorRouter = express.Router();
 
-authorRouter.get("/authors", AuthorController.getAllAuthors);
+authorRouter.get("/authors", AuthorController.getAllAuthors, pagination);
 
 authorRouter.get("/authors/:id", AuthorController.getAuthorById);
 
